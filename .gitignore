@@ -1,0 +1,13 @@
+build.bat
+gradle/wrapper/gradle-wrapper.properties
+gradle/wrapper/gradle-wrapper.jar
+.settings/org.eclipse.jdt.core.prefs
+.gradle/gradle.log
+.project
+.gradle/1.12/taskArtifacts/cache.properties
+.gradle/1.12/taskArtifacts/cache.properties.lock
+.gradle/1.12/taskArtifacts/fileHashes.bin
+.gradle/1.12/taskArtifacts/fileSnapshots.bin
+.gradle/1.12/taskArtifacts/outputFileStates.bin
+.gradle/1.12/taskArtifacts/taskArtifacts.bin
+.classpath
