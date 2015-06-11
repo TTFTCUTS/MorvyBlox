@@ -1,11 +1,11 @@
 package ttftcuts.morvyblox.crafting;
 
 import ttftcuts.morvyblox.api.IMorvyBlockSaw;
+import ttftcuts.morvyblox.shape.BlockMeta;
+import ttftcuts.morvyblox.shape.PartShape;
 import net.minecraft.block.Block;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
@@ -32,7 +32,7 @@ public class CuttingRecipe implements IRecipe {
 					return false;
 				}
 			}
-			else if (item instanceof ItemBlock) { // todo: or a cuttable part block
+			else if (PartShape.getShapeFromStack(stack) != null) {
 				if (cut == null) {
 					cut = stack;
 					cutloc = i;
@@ -45,13 +45,15 @@ public class CuttingRecipe implements IRecipe {
 			}
 		}
 		
-		if (saw == null || cut == null) { return false; }
+		if (saw == null || cut == null) { 
+			return false; 
+		}
 		
-		ItemBlock iblock = (ItemBlock)(cut.getItem());
-		if (iblock == null) { return false; }
-		Block block = iblock.field_150939_a;
-		if (block == null) { return false; }
-		int meta = cut.getItemDamage();
+		BlockMeta blockmeta = BlockMeta.getBlockMetaFromStack(cut);
+		if (blockmeta == null) { return false; }
+		
+		Block block = blockmeta.block;
+		int meta = blockmeta.meta;
 		
 		IMorvyBlockSaw isaw = (IMorvyBlockSaw)(saw.getItem());
 		
@@ -90,13 +92,15 @@ public class CuttingRecipe implements IRecipe {
 				saw = stack;
 				sawloc = i;
 			}
-			else if (item instanceof ItemBlock) { // todo: or a cuttable part block
+			else if (PartShape.getShapeFromStack(stack) != null) {
 				cut = stack;
 				cutloc = i;
 			}
 		}
 		
-		if (saw == null || cut == null) { return null; }
+		if (saw == null || cut == null) {
+			return null; 
+		}
 		
 		int size = grid.getSizeInventory();
 		int stride = (int)Math.round(Math.sqrt(size));
@@ -139,11 +143,15 @@ public class CuttingRecipe implements IRecipe {
 	}
 	
 	protected boolean canCutVertical(ItemStack toCut) {
-		return true;
+		PartShape shape = PartShape.getShapeFromStack(toCut);
+		if (shape == null) { return false; }
+		return shape.verticalCut != null;
 	}
 	
 	protected boolean canCutHorizontal(ItemStack toCut) {
-		return true;
+		PartShape shape = PartShape.getShapeFromStack(toCut);
+		if (shape == null) { return false; }
+		return shape.horizontalCut != null;
 	}
 	
 	protected boolean isHorizontalCut(int xsize, int ysize, int sx, int sy, int bx, int by) {
@@ -154,6 +162,16 @@ public class CuttingRecipe implements IRecipe {
 	}
 	
 	protected ItemStack doCut(ItemStack toCut, boolean vertical) {
-		return vertical ? new ItemStack(Items.diamond) : new ItemStack(Items.emerald);
+		BlockMeta blockmeta = BlockMeta.getBlockMetaFromStack(toCut);		
+		PartShape shape = PartShape.getShapeFromStack(toCut);
+		if (shape == null || blockmeta == null) { return null; }
+		
+		if (vertical && shape.verticalCut != null) {
+			return shape.verticalCut.getStack(blockmeta.block, blockmeta.meta, 2);
+		} else if (shape.horizontalCut != null) {
+			return shape.horizontalCut.getStack(blockmeta.block, blockmeta.meta, 2);
+		}
+		
+		return null;
 	}
 }
