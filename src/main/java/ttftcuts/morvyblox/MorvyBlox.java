@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ttftcuts.morvyblox.crafting.CuttingRecipe;
+import ttftcuts.morvyblox.crafting.JoiningRecipe;
 import ttftcuts.morvyblox.item.ItemPart;
 import ttftcuts.morvyblox.item.ItemSaw;
 import ttftcuts.morvyblox.shape.PartShape;
@@ -40,6 +41,7 @@ public class MorvyBlox {
     	GameRegistry.registerItem(part, "part");
     	
     	GameRegistry.addRecipe(new CuttingRecipe());
+    	GameRegistry.addRecipe(new JoiningRecipe());
     }
     
     @Mod.EventHandler

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ttftcuts.morvyblox.MorvyBlox;
+import ttftcuts.morvyblox.crafting.CuttingRecipe;
 import ttftcuts.morvyblox.item.ItemPart;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -41,7 +42,10 @@ public class PartShape {
 		if (item == null) { return null; }
 		
 		if (item instanceof ItemBlock) {
-			return Shapes.block;
+			ItemBlock ib = (ItemBlock)item;
+			if (CuttingRecipe.isBlockCuttable(ib.field_150939_a, stack.getItemDamage())) {
+				return Shapes.block;
+			}
 		}
 		else if (item instanceof ItemPart) {
 			return ItemPart.getShapeFromStack(stack);
@@ -85,9 +89,9 @@ public class PartShape {
 			panelStrip = new PartShape("p4");
 			coverStrip = new PartShape("p2");
 			
-			notch = new PartShape("p8");
-			corner = new PartShape("p4");
-			nook = new PartShape("p2");
+			notch = new PartShape("c8");
+			corner = new PartShape("c4");
+			nook = new PartShape("c2");
 			
 			// relations
 			block.verticalCut = slab;

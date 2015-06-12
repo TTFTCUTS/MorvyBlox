@@ -131,6 +131,11 @@ public class CuttingRecipe implements IRecipe {
 		return null;
 	}
 
+	public static boolean isBlockCuttable(Block block, int meta) {
+		if (block == null) { return false; }
+		return block.getRenderType() == 0 || block.renderAsNormalBlock();
+	}
+	
 	protected boolean isACut(ItemStack toCut, int xsize, int ysize, int sx, int sy, int bx, int by) {
 		return (isVerticalCut(xsize, ysize, sx, sy, bx, by) && canCutVertical(toCut)) || (isHorizontalCut(xsize, ysize, sx, sy, bx, by) && canCutHorizontal(toCut));
 	}

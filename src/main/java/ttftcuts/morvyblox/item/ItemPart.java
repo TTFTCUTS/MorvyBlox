@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 
 public class ItemPart extends Item {
 	public static final String PARTTAG = "MorvyBloxPart";
@@ -20,14 +21,27 @@ public class ItemPart extends Item {
 		this.setUnlocalizedName("morvyblox.part");
 	}
 	
-	@SuppressWarnings({ "rawtypes" , "unchecked" })
+	/*@SuppressWarnings({ "rawtypes" , "unchecked" })
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation (ItemStack stack, EntityPlayer player, List list, boolean par4) {
 		PartShape shape = getShapeFromStack(stack);
 		BlockMeta blockmeta = getBlockMetaFromStack(stack);
 		list.add("Shape: "+shape.id);
-		list.add("Block: "+new ItemStack(blockmeta.block, blockmeta.meta).getDisplayName());
+		list.add("Block: "+new ItemStack(blockmeta.block, 1, blockmeta.meta).getDisplayName());
+	}*/
+	
+	@Override
+	public String getItemStackDisplayName(ItemStack stack) {
+		BlockMeta bm = BlockMeta.getBlockMetaFromStack(stack);
+		PartShape shape = PartShape.getShapeFromStack(stack);
+		if (bm != null && shape != null) {
+			ItemStack bstack = new ItemStack(bm.block, 1, bm.meta);
+			
+			return bstack.getDisplayName() + " " + StatCollector.translateToLocal(this.getUnlocalizedName()+"."+shape.id);
+		}
+		
+		return super.getItemStackDisplayName(stack);
 	}
 	
 	public static void SetPartData(ItemStack stack, PartShape shape, Block block, int meta) {
