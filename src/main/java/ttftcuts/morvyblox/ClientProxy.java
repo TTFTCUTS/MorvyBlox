@@ -1,6 +1,8 @@
 package ttftcuts.morvyblox;
 
+import net.minecraftforge.client.MinecraftForgeClient;
 import ttftcuts.morvyblox.block.BlockPartRenderer;
+import ttftcuts.morvyblox.item.ItemPartRenderer;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -17,6 +19,7 @@ public class ClientProxy extends CommonProxy {
 		super.init(event);
 		
 		RenderingRegistry.registerBlockHandler(new BlockPartRenderer(RenderingRegistry.getNextAvailableRenderId()));
+		MinecraftForgeClient.registerItemRenderer(MorvyBlox.part, new ItemPartRenderer());
 	}
 	
 	@Override

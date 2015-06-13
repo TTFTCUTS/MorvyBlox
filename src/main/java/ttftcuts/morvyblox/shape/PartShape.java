@@ -13,13 +13,19 @@ import net.minecraft.item.ItemStack;
 
 public class PartShape {
 	public final String id;
+	public final double dx;
+	public final double dy;
+	public final double dz;
 	
 	public PartShape verticalCut = null;
 	public PartShape horizontalCut = null;
 	public PartShape join = null;
-	
-	public PartShape(String id) {
+
+	public PartShape(String id, double dx, double dy, double dz) {
 		this.id = id;
+		this.dx = dx;
+		this.dy = dy;
+		this.dz = dz;
 		
 		Shapes.registry.put(id, this);
 	}
@@ -34,6 +40,14 @@ public class PartShape {
 		ItemPart.SetPartData(stack, this, block, meta);
 		
 		return stack;
+	}
+	
+	public ItemStack getStack(BlockMeta bm, int stacksize) {
+		return getStack(bm.block, bm.meta, stacksize);
+	}
+	
+	public ItemStack getStack(BlockMeta bm) {
+		return getStack(bm,1);
 	}
 	
 	public static PartShape getShapeFromStack(ItemStack stack) {
@@ -74,24 +88,24 @@ public class PartShape {
 		public static void init() {
 			registry = new HashMap<String, PartShape>();
 			
-			block = new PartShape("b") {
+			block = new PartShape("b",1.0,1.0,1.0) {
 				@Override
 				public ItemStack getStack(Block block, int id, int stacksize) {
 					return new ItemStack(block, stacksize, id);
 				}
 			};
 
-			slab = new PartShape("s8");
-			panel = new PartShape("s4");
-			cover = new PartShape("s2");
+			slab = new PartShape("s8",1.0/2,1.0,1.0);
+			panel = new PartShape("s4",1.0/4,1.0,1.0);
+			cover = new PartShape("s2",1.0/8,1.0,1.0);
 			
-			column = new PartShape("p8");
-			panelStrip = new PartShape("p4");
-			coverStrip = new PartShape("p2");
+			column = new PartShape("p8",1.0/2,1.0,1.0/2);
+			panelStrip = new PartShape("p4",1.0/4,1.0,1.0/4);
+			coverStrip = new PartShape("p2",1.0/8,1.0,1.0/8);
 			
-			notch = new PartShape("c8");
-			corner = new PartShape("c4");
-			nook = new PartShape("c2");
+			notch = new PartShape("c8",1.0/2,1.0/2,1.0/2);
+			corner = new PartShape("c4",1.0/4,1.0/4,1.0/4);
+			nook = new PartShape("c2",1.0/8,1.0/8,1.0/8);
 			
 			// relations
 			block.verticalCut = slab;

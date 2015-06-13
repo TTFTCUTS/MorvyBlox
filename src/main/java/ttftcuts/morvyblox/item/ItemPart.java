@@ -10,6 +10,7 @@ import ttftcuts.morvyblox.shape.Raytracer;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,6 +27,7 @@ public class ItemPart extends Item {
 	
 	public ItemPart() {
 		this.setUnlocalizedName("morvyblox.part");
+		this.setTextureName("brick");
 	}
 	
 	@Override
@@ -198,5 +200,11 @@ public class ItemPart extends Item {
 		}
 		
 		return true;
+    }
+	
+	@Override
+	public EnumAction getItemUseAction(ItemStack stack)
+    {
+        return EnumAction.block;
     }
 }

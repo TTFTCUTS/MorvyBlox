@@ -7,6 +7,8 @@ import ttftcuts.morvyblox.MorvyBlox;
 import ttftcuts.morvyblox.shape.BlockMeta;
 import ttftcuts.morvyblox.shape.PartShape;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -14,6 +16,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.IBlockAccess;
 
 public class TilePart extends TileEntity {
 	List<Part> parts;
@@ -107,7 +110,7 @@ public class TilePart extends TileEntity {
 		}
 		
 		public void calculateBounds() {
-			
+			this.aabb = AxisAlignedBB.getBoundingBox(0, 0, 0, this.shape.dx, this.shape.dy, this.shape.dz);
 		}
 		
 		public static NBTTagCompound saveToNBT(Part part) {
@@ -133,6 +136,32 @@ public class TilePart extends TileEntity {
 			int orientation = tag.getInteger("o");
 			
 			return new Part(shape,bm,x,y,z,orientation);
+		}
+		
+		public ItemStack getStack() {
+			return this.shape.getStack(this.blockmeta);
+		}
+		
+		public boolean render(IBlockAccess world, int x, int y, int z) {
+			RenderBlocks r = RenderBlocks.getInstance();
+			
+			BlockPart.renderMeta = this.blockmeta.meta;
+			BlockPart.renderBlock = this.blockmeta.block;
+			
+			if (this.aabb == null || this.blockmeta == null || this.shape == null) {
+				return false; 
+			}
+			
+			r.blockAccess = world;
+			
+			r.setRenderBounds(this.aabb.minX, this.aabb.minY, this.aabb.minZ, this.aabb.maxX, this.aabb.maxY, this.aabb.maxZ);
+			//r.renderStandardBlockWithAmbientOcclusionPartial(this.blockmeta.block, x, y, z, 1.0f, 1.0f, 1.0f);
+			r.renderStandardBlock(MorvyBlox.block, x, y, z);
+
+			BlockPart.renderMeta = 0;
+			BlockPart.renderBlock = null;
+			
+			return true;
 		}
 	}
 }
