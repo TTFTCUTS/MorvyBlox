@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import ttftcuts.morvyblox.MorvyBlox;
 import ttftcuts.morvyblox.block.TilePart;
 import ttftcuts.morvyblox.shape.BlockMeta;
+import ttftcuts.morvyblox.shape.PartPlacer;
 import ttftcuts.morvyblox.shape.PartShape;
 import ttftcuts.morvyblox.shape.Raytracer;
 import net.minecraft.block.Block;
@@ -115,11 +116,15 @@ public class ItemPart extends Item {
         
         MovingObjectPosition hit = Raytracer.traceBlock(world, player, x, y, z);
         
+        //MorvyBlox.logger.info(hit);
+        
         if (hit != null && hit.typeOfHit == MovingObjectType.BLOCK) {
         	
-        	int hx = hit.blockX;
-        	int hy = hit.blockY;
-        	int hz = hit.blockZ;
+        	//MorvyBlox.logger.info("hit 2");
+        	
+        	int hx = x;//hit.blockX;
+        	int hy = y;//hit.blockY;
+        	int hz = z;//hit.blockZ;
         	
         	if (block != MorvyBlox.block) {
         		if (block == Blocks.snow_layer && (world.getBlockMetadata(hx, hy, hz) & 7) < 1)
@@ -148,39 +153,30 @@ public class ItemPart extends Item {
         				break;
         			}
         		}
-        		
-                if (!player.canPlayerEdit(hx, hy, hz, side, stack))
-                {
-                    return false;
-                }
-                else if (hy >= 255)
-                {
-                    return false;
-                }
-                else if (world.canPlaceEntityOnSide(MorvyBlox.block, hx, hy, hz, false, side, player, stack))
-                {
-            		if (!world.checkNoEntityCollision(AxisAlignedBB.getBoundingBox(hx, hy, hz, hx+1, hy+1, hz+1))) {
-            			return false;
-            		}
-                	
-                	BlockMeta b = BlockMeta.getBlockMetaFromStack(stack);
-                	
-                	if (this.placeBlockAt(stack, player, world, hx, hy, hz))
-                    {
-                		TileEntity tile = world.getTileEntity(hx, hy, hz);
-                		if (tile instanceof TilePart) {
-                			PartShape shape = PartShape.getShapeFromStack(stack);
-                			((TilePart)tile).addPart(shape, b, 0, 0, 0, 0);
-                		}
-                        world.playSoundEffect(hx+0.5, hy+0.5, hz+0.5, b.block.stepSound.func_150496_b(), (b.block.stepSound.getVolume() + 1.0F) / 2.0F, b.block.stepSound.getPitch() * 0.8F);
-                        --stack.stackSize;
-                    }
-
-                    return true;
-                }
         	}
-        	
-        	//return true;
+        		
+            if (!player.canPlayerEdit(hx, hy, hz, side, stack))
+            {
+            	//MorvyBlox.logger.info("bail edit");
+                return false;
+            }
+            else if (hy >= 255)
+            {
+            	//MorvyBlox.logger.info("bail height");
+                return false;
+            }
+            else //if (world.canPlaceEntityOnSide(MorvyBlox.block, hx, hy, hz, false, side, player, stack))
+            {
+            	//MorvyBlox.logger.info("place?");
+        		if (!world.checkNoEntityCollision(AxisAlignedBB.getBoundingBox(hx, hy, hz, hx+1, hy+1, hz+1))) {
+        			//MorvyBlox.logger.info("bail collision");
+        			return false;
+        		}
+
+        		PartPlacer.findPlacement(stack, player, world, hx, hy, hz, hit);
+
+                return true;
+            }
         }
         
         return false;

@@ -19,7 +19,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 
 public class TilePart extends TileEntity {
-	List<Part> parts;
+	public List<Part> parts;
 	
 	public TilePart() {
 		MorvyBlox.logger.info("tile!");
